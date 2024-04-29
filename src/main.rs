@@ -17,7 +17,6 @@ async fn check_balance(address: AccountId32, api: OnlineClient::<PolkadotConfig>
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let core_to_renew: u16 = 1;
-    let bob: AccountId32 = dev::bob().public_key().into();
     let alice = dev::alice();
 
     const CORETIME_URI: &str = "ws://127.0.0.1:9920";
@@ -36,7 +35,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let events = block.events().await?;
 
         for event in events.find::<polkadot::broker::events::Renewable>() {
-            let free_balance = check_balance(bob.clone(), coretime_api.clone()).await.unwrap().free;
+            let free_balance = check_balance(alice.public_key.into().clone(), coretime_api.clone()).await.unwrap().free;
 
             let evt = event?;
 
@@ -52,7 +51,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .await?;
                 
                 println!("Block #{block_number}");
-                println!("Core #{core} renewed by {bob}");
+                println!("Core #{core} renewed by {alice}");
 
             }
 
