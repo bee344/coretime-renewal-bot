@@ -1,11 +1,13 @@
 use subxt::{OnlineClient, PolkadotConfig, utils::{AccountId32}};
-use subxt_signer::sr25519::dev::{self};
+use subxt_signer::sr25519::dev;
 
 #[subxt::subxt(
     runtime_metadata_path = "./metadata.scale")]
 pub mod rococo {}
 
-async fn check_balance(address: AccountId32, api: OnlineClient::<PolkadotConfig>) -> Option<rococo::runtime_types::pallet_balances::types::AccountData<::core::primitive::u128>> {
+type AccountData = rococo::runtime_types::pallet_balances::types::AccountData<::core::primitive::u128>;
+
+async fn check_balance(address: AccountId32, api: OnlineClient::<PolkadotConfig>) -> Option<AccountData> {
 
     let balance_query = rococo::storage().balances().account(address);
     let balance = api.storage().at_latest().await.unwrap().fetch(&balance_query).await.unwrap();
