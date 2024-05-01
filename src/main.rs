@@ -65,9 +65,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let free_balance = check_balance(address.clone(), coretime_api.clone()).await.unwrap().data.free;
 
                 if free_balance >= ( price + existential_deposit ) {
-                    let tx_config = DefaultExtrinsicParamsBuilder::<PolkadotConfig>::new()
-                    .build();
-
                     let renewal_tx = rococo::tx().broker().renew(core);
 
                     coretime_api.tx().sign_and_submit_then_watch_default(&renewal_tx, &alice)
