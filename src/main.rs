@@ -72,6 +72,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .wait_for_finalized_success()
                     .await?;
 
+                    println!("core renewed: {core}");
+
+                    renewable = false;
+
                 }
             }
             
