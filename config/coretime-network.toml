@@ -1,0 +1,42 @@
+[settings]
+timeout = 1000
+
+[relaychain]
+chain = "rococo-local"
+default_command = "../polkadot-sdk/target/release/polkadot"
+
+  [[relaychain.nodes]]
+  name = "alice"
+  ws_port = 9900
+  args = ["-lruntime=debug,xcm=trace" ]
+
+  [[relaychain.nodes]]
+  name = "bob"
+  args = ["-lruntime=debug,parachain=trace" ]
+
+  [[relaychain.nodes]]
+  name = "charlie"
+  args = ["-lruntime=debug,parachain=trace" ]
+
+[[parachains]]
+id = 1005
+chain = "coretime-rococo-local"
+
+  [parachains.collator]
+  name = "coretime-collator"
+  ws_port = 9910
+  command = "../polkadot-sdk/target/release/polkadot-parachain"
+  args = [ "-lruntime=debug,xcm=trace" ]
+
+[[parachains]]
+id = 100
+add_to_genesis = false
+register_para = false
+onboard_as_parachain = false
+
+  [parachains.collator]
+  name = "collator-para-100"
+  ws_port = 9920
+  command = "../polkadot-sdk/target/release/polkadot-parachain"
+  args = ["-lruntime=debug,parachain=trace,aura=trace", "--force-authoring"]
+  
