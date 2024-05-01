@@ -11,14 +11,12 @@ async function main() {
         provider: collatorWsProvider,
     })
     await collatorApi.isReady;
-    await collatorApi.isConnected;
 
     const genesisHeader = await collatorApi.rpc.chain.getHeader();
     const validationCode = await collatorApi.rpc.state.getStorage("0x3A636F6465");
 
     await cryptoWaitReady();
 
-    // account to submit tx
     const keyring = new Keyring({ type: "sr25519" });
     const alice = keyring.addFromUri("//Alice");
 
@@ -110,9 +108,7 @@ async function main() {
                 unsub();
                 return resolve();
             } else if (result.isError) {
-                // Probably happens because of: https://github.com/paritytech/polkadot-sdk/issues/1202.
                 console.log(`Transaction error`);
-                // We ignore the error because it is very likely misleading, because of the issue mentioned above.
                 unsub();
                 return resolve();
             }
