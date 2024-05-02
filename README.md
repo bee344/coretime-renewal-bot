@@ -1,15 +1,23 @@
 # coretime-renewal-bot
 
 This is a bot to keep track of when a core becomes renewable, and when it does,
-renew it using the balance of `alice`.
+renew it.
 
 For this, it checks the Coretime Chain's blocks for the desired core's `Renewable`
 event, which indicates the core became renewable, then checks that the balance 
 of the account has enough funds for the renewal and calls `broker.renew(core)`.
+It also takes into account whether we are on the renewal period or not, and indicates
+if the core was renewed or if it hasn't, whether it was due to lack of funds or because
+the renewal window was missed and we have to purchase Coretime through the open market.
 
-### Testing
+**DISCLAIMER**
+This code is designed as a guide on how to handle a Core's coretime renewal, and
+is not ready for production. For it to be usable on a live chain, the signer and 
+endpoint must be changed.
 
-For testing, we use [`zombienet v1.3.102`](https://github.com/paritytech/zombienet/tree/v1.3.102)
+### Running the example
+
+For running the example and seeing its behaviour, we use [`zombienet v1.3.102`](https://github.com/paritytech/zombienet/tree/v1.3.102)
 with the `polkadot`, `polkadot-execute-worker` and `polkadot-prepare-worker` with
 `--features fast-runtime`, and `polkadot-parachain`,
 built from source ([tested with v1.10.0](https://github.com/paritytech/polkadot-sdk/tree/polkadot-v1.10.0)).
