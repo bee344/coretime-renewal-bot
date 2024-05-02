@@ -1,6 +1,6 @@
 # coretime-renewal-bot
 
-**Important Note: This code is an example and should not be used in production. It uses Alice's dev account and a zombienet for testing purposes.**
+#### *DISCLAIMER: This code is an example on how to handle a Core's coretime renewal using subxt and is not meant for use in production in any way. It uses Alice's dev account and a zombienet for testing purposes.*
 
 ### What This Bot Does:
 
