@@ -34,5 +34,5 @@ yarn start
 This will setup the cores and tasks. Once those txs are done, we can run the bot with:
 
 ```bash
-cargo run
+cargo run <URL> <CORE_NUMBER>
 ```
