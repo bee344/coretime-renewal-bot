@@ -73,7 +73,7 @@ async function main() {
             regionLength: 2,
             idealBulkProportion: 100,
             limitCoresOffered: null,
-            renewalBump: 10,
+            renewalBump: 500,
             contributionTimeout: 5,
         }),
         // We need MOARE cores.
@@ -90,7 +90,7 @@ async function main() {
         ),
         // Start sale to make the broker "work", but we don't offer any cores
         // as we have fixed leases only anyway.
-        coretimeApi.tx.broker.startSales(1, 0),
+        coretimeApi.tx.broker.startSales(7653331968, 0),
     ];
     const coretimeSudoBatch = coretimeApi.tx.sudo.sudo(coretimeApi.tx.utility.batch(coretimeCalls));
 

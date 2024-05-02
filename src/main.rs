@@ -20,13 +20,15 @@ async fn check_balance(address: AccountId32, api: OnlineClient::<PolkadotConfig>
 }
 
 async fn get_sale_info(api: OnlineClient::<PolkadotConfig>) -> Option<SaleInfoRecord> {
-    let info = api.storage().at_latest().await.unwrap().fetch(&rococo::storage().broker().sale_info()).await.unwrap();
+    let info_query = rococo::storage().broker().sale_info();
+    let info = api.storage().at_latest().await.unwrap().fetch(&info_query).await.unwrap();
 
     return info;
 }
 
 async fn get_broker_config(api:OnlineClient::<PolkadotConfig>) -> Option<ConfigRecord> {
-    let broker_config = api.storage().at_latest().await.unwrap().fetch(&rococo::storage().broker().configuration()).await.unwrap();
+    let config_query = rococo::storage().broker().configuration();
+    let broker_config = api.storage().at_latest().await.unwrap().fetch(&config_query).await.unwrap();
 
     return broker_config;
 }
@@ -83,7 +85,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             
             if !enough_funds {
                 println!("Funds not enough to renew the core, please add more funds to your account.");
-                continue
             }
 
             let sale_info = get_sale_info(coretime_api.clone()).await.unwrap();
@@ -92,18 +93,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 renewal_start = block_number;
             }
 
-            if sale_info.region_begin >= begin && ( renewal_start + interlude_length ) <= block_number {
-                println!("In renewal window, attempting to renew core #{core_to_renew}.");
-                let renewal_tx = rococo::tx().broker().renew(core);
+            if sale_info.region_begin >= begin {
+                if ( renewal_start + interlude_length ) >= block_number && enough_funds {
+                    println!("In renewal window, attempting to renew core #{core_to_renew}.");
+                    let renewal_tx = rococo::tx().broker().renew(core);
+    
+                    coretime_api.tx().sign_and_submit_then_watch_default(&renewal_tx, &alice)
+                    .await?
+                    .wait_for_finalized_success()
+                    .await?;
+    
+                    println!("Renewed core #{core} on block #{block_number}.");
+    
+                    renewable = false;
+                } else if ( renewal_start + interlude_length ) >= block_number {
+                    println!("Funds not enough to renew the core, please add more funds to your account.");
+                } else {
+                    println!("Outside of renewal window.");
 
-                coretime_api.tx().sign_and_submit_then_watch_default(&renewal_tx, &alice)
-                .await?
-                .wait_for_finalized_success()
-                .await?;
-
-                println!("Renewed core #{core} on block #{block_number}.");
-
-                renewable = false;
+                    renewable = false;
+                }
+                
             }
 
         }
