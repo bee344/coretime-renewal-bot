@@ -1,19 +1,26 @@
 # coretime-renewal-bot
 
-This is a bot to keep track of when a core becomes renewable, and when it does,
-renew it.
+**Important Note: This code is an example and should not be used in production. It uses Alice's dev account and a zombienet for testing purposes.**
 
-For this, it checks the Coretime Chain's blocks for the desired core's `Renewable`
-event, which indicates the core became renewable, then checks that the balance 
-of the account has enough funds for the renewal and calls `broker.renew(core)`.
-It also takes into account whether we are on the renewal period or not, and indicates
-if the core was renewed or if it hasn't, whether it was due to lack of funds or because
-the renewal window was missed and we have to purchase Coretime through the open market.
+### What This Bot Does:
 
-**DISCLAIMER**
-This code is designed as a guide on how to handle a Core's coretime renewal, and
-is not ready for production. For it to be usable on a live chain, the signer and 
-endpoint must be changed.
+This bot has a few key jobs:
+
+* Check Renewal: It looks at the Coretime Chain to see if the core you're interested in is renewable.
+* Check Funds: If the core is renewable, it peeks at your account balance to make sure you have enough funds for the renewal.
+* Call the Broker: If funds are good to go, it tells the broker to renew the core.
+* Keep Track of Time: The bot also keeps an eye on the renewal period. It lets you know if the core was successfully renewed or not. If not, it tells you why – either the funds ran out or the renewal window slipped by.
+
+### How It Works:
+
+The bot uses subxt to talk to the Coretime Chain. It queries for the core's renewal status and checks the account balance. If everything's a go, it tells the broker to renew the core.
+
+The bot also manages the renewal period and updates its status accordingly. It gives you a clear read on the core's renewal status (renewed or not) and the reason for any failures.
+
+## Example Setup:
+
+To get this bot up and running, you'll need to swap out Alice's dev account and the zombienet with your own RPC endpoint and KeyPair. Or, you can tweak the code to build the transaction and sign it offline.
+
 
 ### Running the example
 
