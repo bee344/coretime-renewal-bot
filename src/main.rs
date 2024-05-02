@@ -10,6 +10,7 @@ type AccountData = rococo::runtime_types::pallet_balances::types::AccountData<u1
 type AccountInfo = rococo::runtime_types::frame_system::AccountInfo<u32, AccountData>;
 type SaleInfoRecord = rococo::runtime_types::pallet_broker::types::SaleInfoRecord<u128, u32>;
 type ConfigRecord = rococo::runtime_types::pallet_broker::types::ConfigRecord<u32, u32>;
+type AllowedRenewalId = rococo::runtime_types::pallet_broker::types::AllowedRenewalId;
 
 // Retrieve the balance of an account
 async fn check_balance(address: AccountId32, api: OnlineClient::<PolkadotConfig>) -> Option<AccountInfo> {
@@ -89,6 +90,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 begin = evt.begin;
                 renewable = true;
                 println!("Core is renewable from region {begin} at the price of {price}.");
+
+
+                let renewal_id = {AllowedRenewalId {core: core.clone(), when:  begin.clone()}}; 
+                let storage_query = rococo::storage().broker().allowed_renewals(renewal_id);
+                let allowed_renewals = coretime_api.storage().at_latest().await.unwrap().fetch(&storage_query).await.unwrap().unwrap();
+
+                println!("Allowed renewals info:\n{allowed_renewals:?}");
             }
         }
 
