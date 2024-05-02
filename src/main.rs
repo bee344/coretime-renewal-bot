@@ -1,5 +1,6 @@
 use subxt::{OnlineClient, PolkadotConfig, utils::{AccountId32}};
 use subxt_signer::sr25519::dev;
+use std::env;
 
 #[subxt::subxt(
     runtime_metadata_path = "./metadata.scale")]
@@ -20,14 +21,16 @@ async fn check_balance(address: AccountId32, api: OnlineClient::<PolkadotConfig>
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let core_to_renew: u16 = 1;
+    let args: Vec<String> = env::args().collect();
     let alice = dev::alice();
 
     let address: AccountId32 = alice.public_key().into();
 
-    const CORETIME_URI: &str = "ws://127.0.0.1:9910";
+    const uri: &str = &args[1];
 
-    let coretime_api = OnlineClient::<PolkadotConfig>::from_url(CORETIME_URI).await.unwrap();
+    const core_to_renew: &str = &args[2]
+
+    let coretime_api = OnlineClient::<PolkadotConfig>::from_url(uri).await.unwrap();
     let constant_query = rococo::constants().balances().existential_deposit();
     let existential_deposit = coretime_api.constants().at(&constant_query)?;
 
@@ -72,7 +75,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .wait_for_finalized_success()
                     .await?;
 
-                    println!("core renewed: {core}");
+                    println!("core renewed: {core} on bloc #{block_number}");
 
                     renewable = false;
 
