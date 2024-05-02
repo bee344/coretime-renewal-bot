@@ -17,9 +17,9 @@ The bot uses subxt to talk to the Coretime Chain. It queries for the core's rene
 
 The bot also manages the renewal period and updates its status accordingly. It gives you a clear read on the core's renewal status (renewed or not) and the reason for any failures.
 
-## Example Setup:
+### Example Setup:
 
-To get this bot up and running, you'll need to swap out Alice's dev account and the zombienet with your own RPC endpoint and KeyPair. Or, you can tweak the code to build the transaction and sign it offline.
+To get this bot up and running, you'll need to swap out Alice's dev account and the zombienet with your own KeyPair and RPC endpoint. Or, you can tweak the code to build the transaction and sign it offline.
 
 
 ### Running the example
