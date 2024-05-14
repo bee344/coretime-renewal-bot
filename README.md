@@ -51,3 +51,38 @@ This will setup the cores and tasks. Once those txs are done, we can run the bot
 ```bash
 cargo run <URL> <CORE_NUMBER>
 ```
+
+### Diagram
+
+```mermaid
+graph TD;
+    Start --> Check_Arguments;
+    Check_Arguments -->|Valid Arguments| Connect_Coretime_API;
+    Check_Arguments -->|Invalid Arguments| Error;
+    Connect_Coretime_API --> Fetch_Existential_Deposit;
+    Fetch_Existential_Deposit -->|Existential Deposit Fetched| Fetch_Interlude_Length;
+    Fetch_Interlude_Length -->|Interlude Length Fetched| Subscribe_to_Blockchain;
+    Subscribe_to_Blockchain --> |Block Received| Check_Events;
+    Check_Events -->|Core Renewable| Check_Account_Funds;
+    Check_Events -->|Core Not Renewable| Subscribe_to_Blockchain;
+    Check_Account_Funds -->|Enough Funds| Get_Sale_Info;
+    Check_Account_Funds -->|Not Enough Funds| Warn_Add_Funds;
+    Get_Sale_Info --> Check_Renewal_Period;
+    Check_Renewal_Period -->|Within Renewal Window| Renew_Core;
+    Check_Renewal_Period -->|Outside Renewal Window| Check_Renewal_Period_Start;
+    Check_Renewal_Period_Start -->|Within Renewal Window| Warn_Add_Funds;
+    Check_Renewal_Period_Start -->|Outside Renewal Window| Purchase_Core;
+    Renew_Core --> Sign_Submit_Watch;
+    Sign_Submit_Watch -->|Success| Renewed_Core_Message;
+    Sign_Submit_Watch -->|Failed| Error_Message;
+    Renew_Core -->|Failed| Error_Message;
+    Renewed_Core_Message --> Subscribe_to_Blockchain;
+    Error_Message --> Subscribe_to_Blockchain;
+    Warn_Add_Funds --> Subscribe_to_Blockchain;
+    Purchase_Core --> Subscribe_to_Blockchain;
+    Subscribe_to_Blockchain --> |Block Received| Check_Events;
+    Check_Events -->|No More Blocks| Stop;
+    Stop --> End;
+    Error --> Stop;
+    Renewed_Core_Message --> Subscribe_to_Blockchain;
+```

@@ -41,6 +41,10 @@ async fn get_broker_config(api:OnlineClient::<PolkadotConfig>) -> Option<ConfigR
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = env::args().collect();
 
+    if args.len() <= 2 {
+        panic!("Must provide RPC endpoint URL and Core ID");
+    }
+
     // This is a dev account to exemplify how the bot would behave, but in production
     // it would require an actual keypair.
     let signer = dev::alice();
@@ -59,9 +63,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut begin: u32 = 0;
     let mut renewal_start: u32 = 0;
 
-
+    // We generate the online client
     let coretime_api = OnlineClient::<PolkadotConfig>::from_url(uri).await.unwrap();
 
+    // Query the ED for the chain
     let constant_query = rococo::constants().balances().existential_deposit();
     let existential_deposit = coretime_api.constants().at(&constant_query)?;
 
@@ -69,6 +74,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ending lease has preference to renew the core
     let interlude_length = get_broker_config(coretime_api.clone()).await.unwrap().interlude_length;
 
+    // We subscribe to the blocks to keep checking for the sought event
     let mut blocks_sub = coretime_api.blocks().subscribe_finalized().await?;
 
     while let Some(block) = blocks_sub.next().await {
@@ -78,25 +84,29 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let events = block.events().await?;
 
-        for event in events.find::<rococo::broker::events::Renewable>() {
-            let evt = event?;
+        // If the block is not renewable yet, we check if it became renewable
+        while !renewable {
+            for event in events {
+                let evt = event?;
 
-            core = evt.core;
+                // Retrieve the core mentioned in the event.
+                core = evt.core;
 
-            // Check if the core that became renewable is the one we are looking for,
-            // and if it is, retrieve the data
-            if core == core_to_renew {
-                price = evt.price;
-                begin = evt.begin;
-                renewable = true;
-                println!("Core is renewable from region {begin} at the price of {price}.");
+                // Check if the core that became renewable is the one we are looking for,
+                // and if it is, retrieve the data
+                if core == core_to_renew {
+                    price = evt.price;
+                    begin = evt.begin;
+                    renewable = true;
+                    println!("Core is renewable from region {begin} at the price of {price}.");
 
 
-                let renewal_id = {AllowedRenewalId {core: core.clone(), when:  begin.clone()}}; 
-                let storage_query = rococo::storage().broker().allowed_renewals(renewal_id);
-                let allowed_renewals = coretime_api.storage().at_latest().await.unwrap().fetch(&storage_query).await.unwrap().unwrap();
+                    let renewal_id = {AllowedRenewalId {core: core.clone(), when:  begin.clone()}}; 
+                    let storage_query = rococo::storage().broker().allowed_renewals(renewal_id);
+                    let allowed_renewals = coretime_api.storage().at_latest().await.unwrap().fetch(&storage_query).await.unwrap().unwrap();
 
-                println!("Allowed renewals info:\n{allowed_renewals:?}");
+                    println!("Allowed renewals info:\n{allowed_renewals:?}");
+                }
             }
         }
 
@@ -132,7 +142,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .await?
                     .wait_for_finalized_success()
                     .await?;
-    
+                    
+                    // After the tx's success, we print the news
                     println!("Renewed core #{core} on block #{block_number}.");
 
                     // Reset renewable, since we already renew our lease    
@@ -140,9 +151,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 // Check if we have no funds but if we are in the renewal window
                 } else if ( renewal_start + interlude_length ) >= block_number {
                     println!("Funds not enough to renew the core, please add more funds to your account.");
-                // If previous checks fail, it means the core has to be purchased through the open market
-                // We also reset renewable, since the renewal window has passed
+
                 } else {
+                    // If previous checks fail, it means the core has to be purchased through the open market
+                    // We also reset renewable, since the renewal window has passed
                     println!("Outside of renewal window. Coretime must be purchased on the open market.");
 
                     renewable = false;
