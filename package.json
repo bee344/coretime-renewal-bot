@@ -1,0 +1,12 @@
+{
+  "name": "coretime-renewal-bot",
+  "packageManager": "yarn@3.6.1",
+  "dependencies": {
+    "@polkadot/api": "^11.0.2",
+    "@polkadot/keyring": "^12.6.2",
+    "@polkadot/util-crypto": "^12.6.2"
+  },
+  "scripts": {
+    "test": "node ./test.js"
+  }
+}

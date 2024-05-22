@@ -1,1 +1,4 @@
 /target
+zombienet-linux-x64
+/node_modules
+/.yarn
