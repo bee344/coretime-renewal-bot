@@ -599,7 +599,7 @@
                       "name": "Sudo",
                       "fields": [
                         {
-                          "type": 138,
+                          "type": 139,
                           "typeName": "pallet_sudo::Event<Runtime>"
                         }
                       ],
@@ -6893,6 +6893,10 @@
                     {
                       "name": "Yield",
                       "index": 4
+                    },
+                    {
+                      "name": "StackLimitReached",
+                      "index": 5
                     }
                   ]
                 }
@@ -7396,16 +7400,16 @@
                         },
                         {
                           "name": "old_owner",
-                          "type": 0,
-                          "typeName": "T::AccountId",
+                          "type": 134,
+                          "typeName": "Option<T::AccountId>",
                           "docs": [
                             "The old owner of the Region."
                           ]
                         },
                         {
                           "name": "owner",
-                          "type": 0,
-                          "typeName": "T::AccountId",
+                          "type": 134,
+                          "typeName": "Option<T::AccountId>",
                           "docs": [
                             "The new owner of the Region."
                           ]
@@ -7429,7 +7433,7 @@
                         },
                         {
                           "name": "new_region_ids",
-                          "type": 134,
+                          "type": 135,
                           "typeName": "(RegionId, RegionId)",
                           "docs": [
                             "The new Regions into which it became."
@@ -7454,7 +7458,7 @@
                         },
                         {
                           "name": "new_region_ids",
-                          "type": 134,
+                          "type": 135,
                           "typeName": "(RegionId, RegionId)",
                           "docs": [
                             "The new Regions into which it became."
@@ -7831,7 +7835,7 @@
                         },
                         {
                           "name": "next",
-                          "type": 135,
+                          "type": 136,
                           "typeName": "Option<RegionId>",
                           "docs": [
                             "The next region which should be claimed for the continuation of this contribution."
@@ -8057,7 +8061,7 @@
                         },
                         {
                           "name": "assignment",
-                          "type": 136,
+                          "type": 137,
                           "typeName": "Vec<(CoreAssignment, PartsOf57600)>",
                           "docs": [
                             "The workload to be done on the Core."
@@ -8275,6 +8279,39 @@
           {
             "id": 134,
             "type": {
+              "path": [
+                "Option"
+              ],
+              "params": [
+                {
+                  "name": "T",
+                  "type": 0
+                }
+              ],
+              "def": {
+                "variant": {
+                  "variants": [
+                    {
+                      "name": "None",
+                      "index": 0
+                    },
+                    {
+                      "name": "Some",
+                      "fields": [
+                        {
+                          "type": 0
+                        }
+                      ],
+                      "index": 1
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 135,
+            "type": {
               "def": {
                 "tuple": [
                   126,
@@ -8284,7 +8321,7 @@
             }
           },
           {
-            "id": 135,
+            "id": 136,
             "type": {
               "path": [
                 "Option"
@@ -8317,17 +8354,17 @@
             }
           },
           {
-            "id": 136,
+            "id": 137,
             "type": {
               "def": {
                 "sequence": {
-                  "type": 137
+                  "type": 138
                 }
               }
             }
           },
           {
-            "id": 137,
+            "id": 138,
             "type": {
               "def": {
                 "tuple": [
@@ -8338,7 +8375,7 @@
             }
           },
           {
-            "id": 138,
+            "id": 139,
             "type": {
               "path": [
                 "pallet_sudo",
@@ -8376,7 +8413,7 @@
                       "fields": [
                         {
                           "name": "old",
-                          "type": 139,
+                          "type": 134,
                           "typeName": "Option<T::AccountId>",
                           "docs": [
                             "The old sudo key (if one was previously set)."
@@ -8426,39 +8463,6 @@
               "docs": [
                 "The `Event` enum of this pallet"
               ]
-            }
-          },
-          {
-            "id": 139,
-            "type": {
-              "path": [
-                "Option"
-              ],
-              "params": [
-                {
-                  "name": "T",
-                  "type": 0
-                }
-              ],
-              "def": {
-                "variant": {
-                  "variants": [
-                    {
-                      "name": "None",
-                      "index": 0
-                    },
-                    {
-                      "name": "Some",
-                      "fields": [
-                        {
-                          "type": 0
-                        }
-                      ],
-                      "index": 1
-                    }
-                  ]
-                }
-              }
             }
           },
           {
@@ -11056,6 +11060,31 @@
                         "",
                         "# Example"
                       ]
+                    },
+                    {
+                      "name": "burn",
+                      "fields": [
+                        {
+                          "name": "value",
+                          "type": 51,
+                          "typeName": "T::Balance"
+                        },
+                        {
+                          "name": "keep_alive",
+                          "type": 8,
+                          "typeName": "bool"
+                        }
+                      ],
+                      "index": 10,
+                      "docs": [
+                        "Burn the specified liquid free balance from the origin account.",
+                        "",
+                        "If the origin's account ends up below the existential deposit as a result",
+                        "of the burn and `keep_alive` is false, the account will be reaped.",
+                        "",
+                        "Unlike sending funds to a _burn_ address, which merely makes the funds inaccessible,",
+                        "this `burn` operation will reduce total issuance by the amount _burned_."
+                      ]
                     }
                   ]
                 }
@@ -13361,10 +13390,7 @@
                           "typeName": "Box<VersionedXcm<()>>"
                         }
                       ],
-                      "index": 0,
-                      "docs": [
-                        "WARNING: DEPRECATED. `send` will be removed after June 2024. Use `send_blob` instead."
-                      ]
+                      "index": 0
                     },
                     {
                       "name": "teleport_assets",
@@ -13493,10 +13519,7 @@
                         "",
                         "No more than `max_weight` will be used in its attempted execution. If this is less than",
                         "the maximum amount of weight that the message could take to be executed, then no",
-                        "execution attempt will be made.",
-                        "",
-                        "WARNING: DEPRECATED. `execute` will be removed after June 2024. Use `execute_blob`",
-                        "instead."
+                        "execution attempt will be made."
                       ]
                     },
                     {
@@ -13799,35 +13822,7 @@
                       ]
                     },
                     {
-                      "name": "execute_blob",
-                      "fields": [
-                        {
-                          "name": "encoded_message",
-                          "type": 314,
-                          "typeName": "BoundedVec<u8, MaxXcmEncodedSize>"
-                        },
-                        {
-                          "name": "max_weight",
-                          "type": 10,
-                          "typeName": "Weight"
-                        }
-                      ],
-                      "index": 13,
-                      "docs": [
-                        "Execute an XCM from a local, signed, origin.",
-                        "",
-                        "An event is deposited indicating whether the message could be executed completely",
-                        "or only partially.",
-                        "",
-                        "No more than `max_weight` will be used in its attempted execution. If this is less than",
-                        "the maximum amount of weight that the message could take to be executed, then no",
-                        "execution attempt will be made.",
-                        "",
-                        "The message is passed in encoded. It needs to be decodable as a [`VersionedXcm`]."
-                      ]
-                    },
-                    {
-                      "name": "send_blob",
+                      "name": "transfer_assets_using_type_and_then",
                       "fields": [
                         {
                           "name": "dest",
@@ -13835,19 +13830,86 @@
                           "typeName": "Box<VersionedLocation>"
                         },
                         {
-                          "name": "encoded_message",
+                          "name": "assets",
+                          "type": 89,
+                          "typeName": "Box<VersionedAssets>"
+                        },
+                        {
+                          "name": "assets_transfer_type",
                           "type": 314,
-                          "typeName": "BoundedVec<u8, MaxXcmEncodedSize>"
+                          "typeName": "Box<TransferType>"
+                        },
+                        {
+                          "name": "remote_fees_id",
+                          "type": 278,
+                          "typeName": "Box<VersionedAssetId>"
+                        },
+                        {
+                          "name": "fees_transfer_type",
+                          "type": 314,
+                          "typeName": "Box<TransferType>"
+                        },
+                        {
+                          "name": "custom_xcm_on_dest",
+                          "type": 287,
+                          "typeName": "Box<VersionedXcm<()>>"
+                        },
+                        {
+                          "name": "weight_limit",
+                          "type": 88,
+                          "typeName": "WeightLimit"
                         }
                       ],
-                      "index": 14,
+                      "index": 13,
                       "docs": [
-                        "Send an XCM from a local, signed, origin.",
+                        "Transfer assets from the local chain to the destination chain using explicit transfer",
+                        "types for assets and fees.",
                         "",
-                        "The destination, `dest`, will receive this message with a `DescendOrigin` instruction",
-                        "that makes the origin of the message be the origin on this system.",
+                        "`assets` must have same reserve location or may be teleportable to `dest`. Caller must",
+                        "provide the `assets_transfer_type` to be used for `assets`:",
+                        " - `TransferType::LocalReserve`: transfer assets to sovereign account of destination",
+                        "   chain and forward a notification XCM to `dest` to mint and deposit reserve-based",
+                        "   assets to `beneficiary`.",
+                        " - `TransferType::DestinationReserve`: burn local assets and forward a notification to",
+                        "   `dest` chain to withdraw the reserve assets from this chain's sovereign account and",
+                        "   deposit them to `beneficiary`.",
+                        " - `TransferType::RemoteReserve(reserve)`: burn local assets, forward XCM to `reserve`",
+                        "   chain to move reserves from this chain's SA to `dest` chain's SA, and forward another",
+                        "   XCM to `dest` to mint and deposit reserve-based assets to `beneficiary`. Typically",
+                        "   the remote `reserve` is Asset Hub.",
+                        " - `TransferType::Teleport`: burn local assets and forward XCM to `dest` chain to",
+                        "   mint/teleport assets and deposit them to `beneficiary`.",
                         "",
-                        "The message is passed in encoded. It needs to be decodable as a [`VersionedXcm`]."
+                        "On the destination chain, as well as any intermediary hops, `BuyExecution` is used to",
+                        "buy execution using transferred `assets` identified by `remote_fees_id`.",
+                        "Make sure enough of the specified `remote_fees_id` asset is included in the given list",
+                        "of `assets`. `remote_fees_id` should be enough to pay for `weight_limit`. If more weight",
+                        "is needed than `weight_limit`, then the operation will fail and the sent assets may be",
+                        "at risk.",
+                        "",
+                        "`remote_fees_id` may use different transfer type than rest of `assets` and can be",
+                        "specified through `fees_transfer_type`.",
+                        "",
+                        "The caller needs to specify what should happen to the transferred assets once they reach",
+                        "the `dest` chain. This is done through the `custom_xcm_on_dest` parameter, which",
+                        "contains the instructions to execute on `dest` as a final step.",
+                        "  This is usually as simple as:",
+                        "  `Xcm(vec![DepositAsset { assets: Wild(AllCounted(assets.len())), beneficiary }])`,",
+                        "  but could be something more exotic like sending the `assets` even further.",
+                        "",
+                        "- `origin`: Must be capable of withdrawing the `assets` and executing XCM.",
+                        "- `dest`: Destination context for the assets. Will typically be `[Parent,",
+                        "  Parachain(..)]` to send from parachain to parachain, or `[Parachain(..)]` to send from",
+                        "  relay to parachain, or `(parents: 2, (GlobalConsensus(..), ..))` to send from",
+                        "  parachain across a bridge to another ecosystem destination.",
+                        "- `assets`: The assets to be withdrawn. This should include the assets used to pay the",
+                        "  fee on the `dest` (and possibly reserve) chains.",
+                        "- `assets_transfer_type`: The XCM `TransferType` used to transfer the `assets`.",
+                        "- `remote_fees_id`: One of the included `assets` to be be used to pay fees.",
+                        "- `fees_transfer_type`: The XCM `TransferType` used to transfer the `fees` assets.",
+                        "- `custom_xcm_on_dest`: The XCM to be executed on `dest` chain as the last step of the",
+                        "  transfer, which also determines what happens to the assets on the destination chain.",
+                        "- `weight_limit`: The remote-side weight limit, if any, for the XCM fee purchase."
                       ]
                     }
                   ]
@@ -17402,26 +17464,35 @@
             "id": 314,
             "type": {
               "path": [
-                "bounded_collections",
-                "bounded_vec",
-                "BoundedVec"
-              ],
-              "params": [
-                {
-                  "name": "T",
-                  "type": 2
-                },
-                {
-                  "name": "S",
-                  "type": null
-                }
+                "staging_xcm_executor",
+                "traits",
+                "asset_transfer",
+                "TransferType"
               ],
               "def": {
-                "composite": {
-                  "fields": [
+                "variant": {
+                  "variants": [
                     {
-                      "type": 14,
-                      "typeName": "Vec<T>"
+                      "name": "Teleport",
+                      "index": 0
+                    },
+                    {
+                      "name": "LocalReserve",
+                      "index": 1
+                    },
+                    {
+                      "name": "DestinationReserve",
+                      "index": 2
+                    },
+                    {
+                      "name": "RemoteReserve",
+                      "fields": [
+                        {
+                          "type": 114,
+                          "typeName": "VersionedLocation"
+                        }
+                      ],
+                      "index": 3
                     }
                   ]
                 }
@@ -17589,13 +17660,6 @@
                       ]
                     },
                     {
-                      "name": "InvalidAssetNotConcrete",
-                      "index": 20,
-                      "docs": [
-                        "Invalid non-concrete asset."
-                      ]
-                    },
-                    {
                       "name": "InvalidAssetUnknownReserve",
                       "index": 21,
                       "docs": [
@@ -17621,21 +17685,6 @@
                       "index": 24,
                       "docs": [
                         "Local XCM execution incomplete."
-                      ]
-                    },
-                    {
-                      "name": "UnableToDecode",
-                      "index": 25,
-                      "docs": [
-                        "Could not decode XCM."
-                      ]
-                    },
-                    {
-                      "name": "XcmTooLarge",
-                      "index": 26,
-                      "docs": [
-                        "XCM encoded length is too large.",
-                        "Returned when an XCM encoded length is larger than `MaxXcmEncodedSize`."
                       ]
                     }
                   ]
@@ -18799,7 +18848,7 @@
                           "typeName": "BalanceOf<T>"
                         },
                         {
-                          "name": "core_count",
+                          "name": "extra_cores",
                           "type": 127,
                           "typeName": "CoreIndex"
                         }
@@ -18810,7 +18859,11 @@
                         "",
                         "- `origin`: Must be Root or pass `AdminOrigin`.",
                         "- `initial_price`: The price of Bulk Coretime in the first sale.",
-                        "- `core_count`: The number of cores which can be allocated."
+                        "- `extra_cores`: Number of extra cores that should be requested on top of the cores",
+                        "  required for `Reservations` and `Leases`.",
+                        "",
+                        "This will call [`Self::request_core_count`] internally to set the correct core count on",
+                        "the relay chain."
                       ]
                     },
                     {
@@ -19000,13 +19053,12 @@
                       "docs": [
                         "Claim the revenue owed from inclusion in the Instantaneous Coretime Pool.",
                         "",
-                        "- `origin`: Must be a Signed origin of the account which owns the Region `region_id`.",
+                        "- `origin`: Must be a Signed origin.",
                         "- `region_id`: The Region which was assigned to the Pool.",
-                        "- `max_timeslices`: The maximum number of timeslices which should be processed. This may",
-                        "  effect the weight of the call but should be ideally made equivalent to the length of",
-                        "  the Region `region_id`. If it is less than this, then further dispatches will be",
-                        "  required with the `region_id` which makes up any remainders of the region to be",
-                        "  collected."
+                        "- `max_timeslices`: The maximum number of timeslices which should be processed. This",
+                        "  must be greater than 0. This may affect the weight of the call but should be ideally",
+                        "  made equivalent to the length of the Region `region_id`. If less, further dispatches",
+                        "  will be required with the same `region_id` to claim revenue for the remainder."
                       ]
                     },
                     {
@@ -20210,8 +20262,8 @@
                     },
                     {
                       "name": "owner",
-                      "type": 0,
-                      "typeName": "AccountId"
+                      "type": 134,
+                      "typeName": "Option<AccountId>"
                     },
                     {
                       "name": "paid",
@@ -20570,6 +20622,13 @@
                       "index": 27,
                       "docs": [
                         "The configuration could not be applied because it is invalid."
+                      ]
+                    },
+                    {
+                      "name": "NoClaimTimeslices",
+                      "index": 28,
+                      "docs": [
+                        "The revenue must be claimed for 1 or more timeslices."
                       ]
                     }
                   ]
@@ -23898,6 +23957,48 @@
             "id": 404,
             "type": {
               "path": [
+                "Result"
+              ],
+              "params": [
+                {
+                  "name": "T",
+                  "type": 6
+                },
+                {
+                  "name": "E",
+                  "type": 26
+                }
+              ],
+              "def": {
+                "variant": {
+                  "variants": [
+                    {
+                      "name": "Ok",
+                      "fields": [
+                        {
+                          "type": 6
+                        }
+                      ],
+                      "index": 0
+                    },
+                    {
+                      "name": "Err",
+                      "fields": [
+                        {
+                          "type": 26
+                        }
+                      ],
+                      "index": 1
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 405,
+            "type": {
+              "path": [
                 "pallet_transaction_payment",
                 "types",
                 "RuntimeDispatchInfo"
@@ -23936,7 +24037,7 @@
             }
           },
           {
-            "id": 405,
+            "id": 406,
             "type": {
               "path": [
                 "pallet_transaction_payment",
@@ -23954,7 +24055,7 @@
                   "fields": [
                     {
                       "name": "inclusion_fee",
-                      "type": 406,
+                      "type": 407,
                       "typeName": "Option<InclusionFee<Balance>>"
                     },
                     {
@@ -23968,7 +24069,7 @@
             }
           },
           {
-            "id": 406,
+            "id": 407,
             "type": {
               "path": [
                 "Option"
@@ -23976,7 +24077,7 @@
               "params": [
                 {
                   "name": "T",
-                  "type": 407
+                  "type": 408
                 }
               ],
               "def": {
@@ -23990,7 +24091,7 @@
                       "name": "Some",
                       "fields": [
                         {
-                          "type": 407
+                          "type": 408
                         }
                       ],
                       "index": 1
@@ -24001,7 +24102,7 @@
             }
           },
           {
-            "id": 407,
+            "id": 408,
             "type": {
               "path": [
                 "pallet_transaction_payment",
@@ -24038,7 +24139,7 @@
             }
           },
           {
-            "id": 408,
+            "id": 409,
             "type": {
               "path": [
                 "cumulus_primitives_core",
@@ -24059,7 +24160,7 @@
                     },
                     {
                       "name": "new_validation_code",
-                      "type": 409,
+                      "type": 410,
                       "typeName": "Option<relay_chain::ValidationCode>"
                     },
                     {
@@ -24083,7 +24184,7 @@
             }
           },
           {
-            "id": 409,
+            "id": 410,
             "type": {
               "path": [
                 "Option"
@@ -24091,7 +24192,7 @@
               "params": [
                 {
                   "name": "T",
-                  "type": 410
+                  "type": 411
                 }
               ],
               "def": {
@@ -24105,7 +24206,7 @@
                       "name": "Some",
                       "fields": [
                         {
-                          "type": 410
+                          "type": 411
                         }
                       ],
                       "index": 1
@@ -24116,7 +24217,7 @@
             }
           },
           {
-            "id": 410,
+            "id": 411,
             "type": {
               "path": [
                 "polkadot_parachain_primitives",
@@ -24136,7 +24237,7 @@
             }
           },
           {
-            "id": 411,
+            "id": 412,
             "type": {
               "path": [
                 "Result"
@@ -24178,7 +24279,50 @@
             }
           },
           {
-            "id": 412,
+            "id": 413,
+            "type": {
+              "path": [
+                "Option"
+              ],
+              "params": [
+                {
+                  "name": "T",
+                  "type": 145
+                }
+              ],
+              "def": {
+                "variant": {
+                  "variants": [
+                    {
+                      "name": "None",
+                      "index": 0
+                    },
+                    {
+                      "name": "Some",
+                      "fields": [
+                        {
+                          "type": 145
+                        }
+                      ],
+                      "index": 1
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": 414,
+            "type": {
+              "def": {
+                "sequence": {
+                  "type": 145
+                }
+              }
+            }
+          },
+          {
+            "id": 415,
             "type": {
               "path": [
                 "coretime_rococo_runtime",
@@ -24961,15 +25105,15 @@
                 0,
                 0,
                 0,
-                80,
-                105,
+                32,
+                113,
                 15,
                 0,
                 0,
                 0,
                 0,
                 0,
-                52,
+                56,
                 221,
                 113,
                 141,
@@ -25078,6 +25222,18 @@
                 0,
                 0,
                 0,
+                138,
+                244,
+                229,
+                123,
+                4,
+                19,
+                248,
+                158,
+                1,
+                0,
+                0,
+                0,
                 55,
                 200,
                 187,
@@ -25126,7 +25282,7 @@
                 0,
                 0,
                 0,
-                0,
+                1,
                 0,
                 0,
                 0,
@@ -26960,6 +27116,43 @@
                 "docs": [
                   " Global suspension state of the XCM executor."
                 ]
+              },
+              {
+                "name": "ShouldRecordXcm",
+                "modifier": "Default",
+                "ty": {
+                  "Plain": 8
+                },
+                "default": [
+                  0
+                ],
+                "docs": [
+                  " Whether or not incoming XCMs (both executed locally and received) should be recorded.",
+                  " Only one XCM program will be recorded at a time.",
+                  " This is meant to be used in runtime APIs, and it's advised it stays false",
+                  " for all other use cases, so as to not degrade regular performance.",
+                  "",
+                  " Only relevant if this pallet is being used as the [`xcm_executor::traits::RecordXcm`]",
+                  " implementation in the XCM executor configuration."
+                ]
+              },
+              {
+                "name": "RecordedXcm",
+                "modifier": "Optional",
+                "ty": {
+                  "Plain": 61
+                },
+                "default": [
+                  0
+                ],
+                "docs": [
+                  " If [`ShouldRecordXcm`] is set to true, then the last XCM program executed locally",
+                  " will be stored here.",
+                  " Runtime APIs can fetch the XCM that was executed by accessing this value.",
+                  "",
+                  " Only relevant if this pallet is being used as the [`xcm_executor::traits::RecordXcm`]",
+                  " implementation in the XCM executor configuration."
+                ]
               }
             ]
           },
@@ -27418,7 +27611,7 @@
                   0
                 ],
                 "docs": [
-                  " The current (unassigned) Regions."
+                  " The current (unassigned or provisionally assigend) Regions."
                 ]
               },
               {
@@ -27566,7 +27759,7 @@
               "name": "TimeslicePeriod",
               "ty": 4,
               "value": [
-                80,
+                10,
                 0,
                 0,
                 0
@@ -27632,7 +27825,7 @@
             "ty": 335
           },
           "event": {
-            "ty": 138
+            "ty": 139
           },
           "constants": [],
           "error": {
@@ -28035,6 +28228,20 @@
           ]
         },
         {
+          "name": "BrokerApi",
+          "methods": [
+            {
+              "name": "sale_price",
+              "inputs": [],
+              "output": 404,
+              "docs": [
+                " If there is an ongoing sale returns the current price of a core."
+              ]
+            }
+          ],
+          "docs": []
+        },
+        {
           "name": "TransactionPaymentApi",
           "methods": [
             {
@@ -28049,7 +28256,7 @@
                   "ty": 4
                 }
               ],
-              "output": 404,
+              "output": 405,
               "docs": []
             },
             {
@@ -28064,7 +28271,7 @@
                   "ty": 4
                 }
               ],
-              "output": 405,
+              "output": 406,
               "docs": []
             },
             {
@@ -28107,7 +28314,7 @@
                   "ty": 4
                 }
               ],
-              "output": 404,
+              "output": 405,
               "docs": [
                 " Query information of a dispatch class, weight, and fee of a given encoded `Call`."
               ]
@@ -28124,7 +28331,7 @@
                   "ty": 4
                 }
               ],
-              "output": 405,
+              "output": 406,
               "docs": [
                 " Query fee details of a given encoded `Call`."
               ]
@@ -28169,7 +28376,7 @@
                   "ty": 383
                 }
               ],
-              "output": 408,
+              "output": 409,
               "docs": [
                 " Collect information about a collation.",
                 "",
@@ -28186,33 +28393,61 @@
           "name": "GenesisBuilder",
           "methods": [
             {
-              "name": "create_default_config",
-              "inputs": [],
-              "output": 14,
-              "docs": [
-                " Creates the default `RuntimeGenesisConfig` and returns it as a JSON blob.",
-                "",
-                " This function instantiates the default `RuntimeGenesisConfig` struct for the runtime and serializes it into a JSON",
-                " blob. It returns a `Vec<u8>` containing the JSON representation of the default `RuntimeGenesisConfig`."
-              ]
-            },
-            {
-              "name": "build_config",
+              "name": "build_state",
               "inputs": [
                 {
                   "name": "json",
                   "ty": 14
                 }
               ],
-              "output": 411,
+              "output": 412,
               "docs": [
-                " Build `RuntimeGenesisConfig` from a JSON blob not using any defaults and store it in the storage.",
+                " Build `RuntimeGenesisConfig` from a JSON blob not using any defaults and store it in the",
+                " storage.",
                 "",
-                " This function deserializes the full `RuntimeGenesisConfig` from the given JSON blob and puts it into the storage.",
-                " If the provided JSON blob is incorrect or incomplete or the deserialization fails, an error is returned.",
-                " It is recommended to log any errors encountered during the process.",
+                " In the case of a FRAME-based runtime, this function deserializes the full `RuntimeGenesisConfig` from the given JSON blob and",
+                " puts it into the storage. If the provided JSON blob is incorrect or incomplete or the",
+                " deserialization fails, an error is returned.",
                 "",
-                " Please note that provided json blob must contain all `RuntimeGenesisConfig` fields, no defaults will be used."
+                " Please note that provided JSON blob must contain all `RuntimeGenesisConfig` fields, no",
+                " defaults will be used."
+              ]
+            },
+            {
+              "name": "get_preset",
+              "inputs": [
+                {
+                  "name": "id",
+                  "ty": 413
+                }
+              ],
+              "output": 276,
+              "docs": [
+                " Returns a JSON blob representation of the built-in `RuntimeGenesisConfig` identified by",
+                " `id`.",
+                "",
+                " If `id` is `None` the function returns JSON blob representation of the default",
+                " `RuntimeGenesisConfig` struct of the runtime. Implementation must provide default",
+                " `RuntimeGenesisConfig`.",
+                "",
+                " Otherwise function returns a JSON representation of the built-in, named",
+                " `RuntimeGenesisConfig` preset identified by `id`, or `None` if such preset does not",
+                " exists. Returned `Vec<u8>` contains bytes of JSON blob (patch) which comprises a list of",
+                " (potentially nested) key-value pairs that are intended for customizing the default",
+                " runtime genesis config. The patch shall be merged (rfc7386) with the JSON representation",
+                " of the default `RuntimeGenesisConfig` to create a comprehensive genesis config that can",
+                " be used in `build_state` method."
+              ]
+            },
+            {
+              "name": "preset_names",
+              "inputs": [],
+              "output": 414,
+              "docs": [
+                " Returns a list of identifiers for available builtin `RuntimeGenesisConfig` presets.",
+                "",
+                " The presets from the list can be queried with [`GenesisBuilder::get_preset`] method. If",
+                " no named presets are provided by the runtime the list is empty."
               ]
             }
           ],
@@ -28224,7 +28459,7 @@
       "outer_enums": {
         "call_enum_ty": 327,
         "event_enum_ty": 21,
-        "error_enum_ty": 412
+        "error_enum_ty": 415
       },
       "custom": {
         "map": {}
