@@ -78,6 +78,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut blocks_sub = coretime_api.blocks().subscribe_finalized().await?;
 
     while let Some(block) = blocks_sub.next().await {
+        
         let block = block?;
 
         let block_number = block.header().number;
@@ -86,27 +87,40 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // If the block is not renewable yet, we check if it became renewable
         while !renewable {
-            for event in events {
-                let evt = event?;
+            let mut found_event = false;
+            for event in events.find::<rococo::broker::events::Renewable>() {
+                
+                match event {
+                    Ok(evt) => {
+                        println!("{:?}", &evt);
+                        // Retrieve the core mentioned in the event.
+                        core = evt.core;
 
-                // Retrieve the core mentioned in the event.
-                core = evt.core;
-
-                // Check if the core that became renewable is the one we are looking for,
-                // and if it is, retrieve the data
-                if core == core_to_renew {
-                    price = evt.price;
-                    begin = evt.begin;
-                    renewable = true;
-                    println!("Core is renewable from region {begin} at the price of {price}.");
+                        // Check if the core that became renewable is the one we are looking for,
+                        // and if it is, retrieve the data
+                        if core == core_to_renew {
+                            price = evt.price;
+                            begin = evt.begin;
+                            renewable = true;
+                            println!("Core is renewable from region {begin} at the price of {price}.");
 
 
-                    let renewal_id = {AllowedRenewalId {core: core.clone(), when:  begin.clone()}}; 
-                    let storage_query = rococo::storage().broker().allowed_renewals(renewal_id);
-                    let allowed_renewals = coretime_api.storage().at_latest().await.unwrap().fetch(&storage_query).await.unwrap().unwrap();
+                            let renewal_id = {AllowedRenewalId {core: core.clone(), when:  begin.clone()}}; 
+                            let storage_query = rococo::storage().broker().allowed_renewals(renewal_id);
+                            let allowed_renewals = coretime_api.storage().at_latest().await.unwrap().fetch(&storage_query).await.unwrap().unwrap();
 
-                    println!("Allowed renewals info:\n{allowed_renewals:?}");
+                            println!("Allowed renewals info:\n{allowed_renewals:?}");
+                            found_event = true;
+                            break;
+                        }
+                    },
+                    _ => continue,
                 }
+                
+            }
+
+            if !found_event {
+                break;
             }
         }
 

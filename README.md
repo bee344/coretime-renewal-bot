@@ -2,6 +2,8 @@
 
 #### *DISCLAIMER: This code is an example on how to handle a Core's coretime renewal using subxt and is not meant for use in production in any way. It uses Alice's dev account and a zombienet for testing purposes.*
 
+#### *Tested against Rococo v1012000*
+
 ### What This Bot Does:
 
 This bot has a few key jobs:
@@ -24,10 +26,10 @@ To get this bot up and running, you'll need to swap out Alice's dev account and 
 
 ### Running the example
 
-For running the example and seeing its behaviour, we use [`zombienet v1.3.102`](https://github.com/paritytech/zombienet/tree/v1.3.102)
+For running the example and seeing its behaviour, we use [`zombienet v1.3.105`](https://github.com/paritytech/zombienet/tree/v1.3.102)
 with the `polkadot`, `polkadot-execute-worker` and `polkadot-prepare-worker` with
 `--features fast-runtime`, and `polkadot-parachain`,
-built from source ([tested with v1.10.0](https://github.com/paritytech/polkadot-sdk/tree/polkadot-v1.10.0)).
+built from source ([tested with v1.12.0](https://github.com/paritytech/polkadot-sdk/tree/polkadot-v1.12.0)).
 
 We also use the `subxt cli`. For installing you can run:
 ```bash
@@ -44,7 +46,7 @@ After this was setup, we need to start the `zombienet` with:
 ```
 Wait for it to be up and then open a new terminal and run:
 ```bash
-yarn start
+yarn test
 ```
 This will setup the cores and tasks. Once those txs are done, we can run the bot with:
 
