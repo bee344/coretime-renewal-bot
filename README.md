@@ -2,7 +2,7 @@
 
 #### *DISCLAIMER: This code is an example on how to handle a Core's coretime renewal using subxt and is not meant for use in production in any way. It uses Alice's dev account and a zombienet for testing purposes.*
 
-#### *Tested against Rococo v1012000*
+#### *Tested against Rococo v1017001*
 
 ### What This Bot Does:
 
@@ -19,6 +19,10 @@ The bot uses subxt to talk to the Coretime Chain. It queries for the core's rene
 
 The bot also manages the renewal period and updates its status accordingly. It gives you a clear read on the core's renewal status (renewed or not) and the reason for any failures.
 
+To run the bot, you must simply specify the `URL` of the node you are connecting to and the `CORE` you want to renew.
+
+You must also update the `address` and `signer` used in [`main.rs`](/src/main.rs#L50-L51) to your own.
+
 ### Example Setup:
 
 To get this bot up and running, you'll need to swap out Alice's dev account and the zombienet with your own KeyPair and RPC endpoint. Or, you can tweak the code to build the transaction and sign it offline.
@@ -26,19 +30,18 @@ To get this bot up and running, you'll need to swap out Alice's dev account and 
 
 ### Running the example
 
-For running the example and seeing its behaviour, we use [`zombienet v1.3.105`](https://github.com/paritytech/zombienet/tree/v1.3.102)
+For running the example and seeing its behaviour, we use [`zombienet v1.3.119`](https://github.com/paritytech/zombienet/tree/v1.3.119)
 with the `polkadot`, `polkadot-execute-worker` and `polkadot-prepare-worker` with
 `--features fast-runtime`, and `polkadot-parachain`,
-built from source ([tested with v1.12.0](https://github.com/paritytech/polkadot-sdk/tree/polkadot-v1.12.0)).
+built from source ([tested with stable2412](https://github.com/paritytech/polkadot-sdk/tree/stable2412)).
 
 We also use the `subxt cli`. For installing you can run:
 ```bash
 cargo install subxt-cli
 ```
-
 Then we need to run the following command to retrieve the metadata from the `coretime rococo` parachain:
 ```bash
-subxt metadata --url https://rococo-coretime-rpc.polkadot.io -f bytes > metadata.scale
+subxt metadata --url http://127.0.0.1:9910 -f bytes > metadata.scale
 ```
 After this was setup, we need to start the `zombienet` with:
 ```bash
@@ -46,12 +49,12 @@ After this was setup, we need to start the `zombienet` with:
 ```
 Wait for it to be up and then open a new terminal and run:
 ```bash
-yarn test
+yarn setup
 ```
 This will setup the cores and tasks. Once those txs are done, we can run the bot with:
 
 ```bash
-cargo run <URL> <CORE_NUMBER>
+cargo run ws://127.0.0.1:9910 1
 ```
 
 ### Diagram
